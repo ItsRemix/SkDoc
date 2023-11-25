@@ -1,0 +1,16 @@
+#*
+# line 1
+# Test function description
+# line 2
+#*
+function kGame_reloadYaml(t: text=""):
+    set {_kGameUtil} to kGame_getPath("kGame_Util", "mainInventory")
+    set {kGame::mainInventory::inventory::name} to yaml value "inventory.name" from {_kGameUtil}
+    set {kGame::mainInventory::inventory::item::empty} to yaml value "inventory.empty" from {_kGameUtil}
+    set {kGame::mainInventory::inventory::rows} to yaml value "inventory.rows" from {_kGameUtil}
+    loop yaml nodes "inventory" from {_kGameUtil}:
+        if loop-value is not "name" or "rows" or "empty":
+            set {_yml} to yaml value "inventory.%loop-value%.item" from {_kGameUtil}
+            set {kGame::registersGame::%loop-value%::item} to kGame_getItemFromText({_yml})
+            set {kGame::registersGame::%loop-value%::slot} to yaml value "inventory.%loop-value%.slot" from {_kGameUtil}
+    return true
